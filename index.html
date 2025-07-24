@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Precios OMIE - Hoy</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    canvas {
+      width: 100% !important;
+      height: auto !important;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.9em;
+      color: #888;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Precio horario OMIE (simulado)</h1>
+    <h2 id="precio-medio"></h2>
+    <canvas id="chartOMIE"></canvas>
+    <footer>Actualizado: <span id="fecha"></span> · Datos simulados · v1.0</footer>
+  </div>
+
+  <script>
+    const horas = Array.from({length: 24}, (_, i) => i + ":00");
+    const precios = [87.3, 83.2, 78.4, 74.1, 71.6, 73.9, 80.2, 88.7, 96.4, 102.3, 105.1, 107.5,
+                     106.3, 103.2, 100.5, 97.8, 93.1, 89.4, 86.7, 85.2, 84.1, 82.6, 80.4, 78.9];
+
+    const ctx = document.getElementById("chartOMIE").getContext("2d");
+    const chart = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: horas,
+        datasets: [{
+          label: "€/MWh",
+          data: precios,
+          borderColor: "#007bff",
+          backgroundColor: "rgba(0,123,255,0.1)",
+          tension: 0.3,
+          fill: true,
+          pointRadius: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: "€/MWh"
+            }
+          }
+        },
+        plugins: {
+          legend: { display: false }
+        }
+      }
+    });
+
+    const media = (precios.reduce((a, b) => a + b, 0) / precios.length).toFixed(2);
+    document.getElementById("precio-medio").textContent = `Precio medio del día: ${media} €/MWh`;
+
+    const hoy = new Date().toLocaleDateString("es-ES", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById("fecha").textContent = hoy.charAt(0).toUpperCase() + hoy.slice(1);
+  </script>
+</body>
+</html>
